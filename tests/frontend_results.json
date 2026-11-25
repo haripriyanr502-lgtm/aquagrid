@@ -1,0 +1,9 @@
+[
+ {"test": "Dashboard compiles (esbuild, JSX)", "expected": "no compile errors", "actual": "bundled", "status": "PASS", "executed": true, "fakes": "recharts, react-leaflet and supabase-js replaced by stubs (packages not installable offline)"},
+ {"test": "All 10 sections render with data (server render)", "expected": "no exceptions", "actual": "10/10 render", "status": "PASS", "executed": true, "fakes": "mock data, chart/map stubs"},
+ {"test": "All 10 sections render signed-in and with empty data", "expected": "no exceptions; empty states shown", "actual": "20/20 render", "status": "PASS", "executed": true, "fakes": "mock data"},
+ {"test": "Navigation in headless Chrome", "expected": "each tab sets #hash and active state", "actual": "10/10 tabs switch correctly, no JavaScript errors", "status": "PASS", "executed": true, "fakes": "stubbed Supabase returning empty data"},
+ {"test": "Real Vite build with real packages", "expected": "npm run build succeeds", "actual": "not run - npm registry unreachable from this sandbox", "status": "NOT TESTED", "executed": false, "fakes": "-"},
+ {"test": "Realtime updates from a live Supabase project", "expected": "rows appear without refresh", "actual": "no Supabase credentials in this environment", "status": "NOT TESTED", "executed": false, "fakes": "-"},
+ {"test": "Leaflet map tiles and Recharts drawing", "expected": "map and charts visible", "actual": "libraries not installable offline; structure verified with stubs only", "status": "NOT TESTED", "executed": false, "fakes": "-"}
+]

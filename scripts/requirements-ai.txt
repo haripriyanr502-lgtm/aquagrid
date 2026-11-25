@@ -1,0 +1,3 @@
+# DrainX pothole detection + evaluation (large download: PyTorch + OpenCV)
+-r requirements.txt
+ultralytics>=8.1

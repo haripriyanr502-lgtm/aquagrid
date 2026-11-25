@@ -1,0 +1,178 @@
+[
+  {
+    "test": "Risk labels at the guide thresholds",
+    "expected": "0.19 LOW, 0.20 MEDIUM, 0.45 HIGH, 0.70 CRITICAL",
+    "actual": "LOW, MEDIUM, MEDIUM, HIGH, HIGH, CRITICAL",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Risk formula 0.6 x flood + 0.4 x potholes",
+    "expected": "300 m3 + 10 MEDIUM potholes = 1.00 CRITICAL; 150 m3 + 0 = 0.30",
+    "actual": "1.0 CRITICAL; 0.3 MEDIUM",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Missing flood data is not treated as zero",
+    "expected": "flood_available False, explanation warns, flood_score None",
+    "actual": "risk 0.24 (potholes only), flagged",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "False positives excluded from pothole density",
+    "expected": "2 real + 3 false positives counts as 2",
+    "actual": "pothole_count 2",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Severity heuristic from box area",
+    "expected": "2% LOW, 8% MEDIUM, 20% HIGH, None -> None",
+    "actual": "['LOW', 'MEDIUM', 'HIGH', None]",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Repair priority ranks a risky, repeatedly detected road higher",
+    "expected": "CRITICAL road with repeats > LOW road; reasons explain it",
+    "actual": "hot 89.0 IMMEDIATE vs cold 2.8 MONITOR",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "NMEA GPS parsing (GGA + RMC, no-fix rejected)",
+    "expected": "12.9177, 77.6238 from both; None without fix",
+    "actual": "(12.9177, 77.6238) / (12.9177, 77.6238) / None",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "EXIF GPS read from a phone-style JPEG",
+    "expected": "coordinates written into EXIF are read back",
+    "actual": "(12.9177, 77.6238); photo without GPS -> None",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Location priority never invents coordinates",
+    "expected": "EXIF > device > browser > manual; nothing -> (None, None, 'none')",
+    "actual": "all four priorities correct; no source gives no coordinates",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Class filter keeps only potholes in multi-class models",
+    "expected": "pothole kept, manhole dropped; 1-class model keeps all",
+    "actual": "multi-class kept 1, single-class kept 2, area 50.0% -> HIGH",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Missing model weights reported clearly",
+    "expected": "model_loaded False with instructions",
+    "actual": "Model weights not found at /nonexistent/best.pt. Copy your trained bes...",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Alert duplicate prevention",
+    "expected": "same dedupe_key stored once",
+    "actual": "2 rows stored from 3 calls",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "FakeDB (in-memory Supabase)"
+  },
+  {
+    "test": "Road risk with no twin run flags missing flood data",
+    "expected": "all 4 segments flood_available False",
+    "actual": "run None; J2 risk 0.06 LOW from potholes only",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "FakeDB"
+  },
+  {
+    "test": "Road risk uses the latest twin run",
+    "expected": "J2 CRITICAL when twin predicts 300 m3 + 6 potholes",
+    "actual": "J2 0.84 CRITICAL; J1 0.0 (forecast says no flood)",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "FakeDB"
+  },
+  {
+    "test": "Repair priority keeps the human-set status",
+    "expected": "status 'In Progress' survives a recalculation",
+    "actual": "J2 rank 1, status In Progress",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "FakeDB"
+  },
+  {
+    "test": "Bridge only forwards known firmware commands",
+    "expected": "T:55, R:ON, D:AUTO accepted; 'rm -rf', T:999 rejected",
+    "actual": "5 accepted, 4 rejected",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Simulated node obeys commands and labels nothing as real",
+    "expected": "rain fills sump, first flush goes to drain, then gate opens above threshold",
+    "actual": "first flush to drain, then gate opened at reading 23 (level 62.3%)",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "SimulatedNode (software model)"
+  },
+  {
+    "test": "Twin optimiser beats the threshold controller",
+    "expected": "optimised flood < threshold flood < baseline",
+    "actual": "baseline 787 m3, threshold 696, optimised 563; OR1 opens at minute 75 (threshold opened earlier)",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "fake SWMM engine (tests/fakes.py)"
+  },
+  {
+    "test": "Rain series is written into the SWMM input file",
+    "expected": "[TIMESERIES] replaced, other sections intact",
+    "actual": "3 rain steps + end marker written; [ORIFICES] and [REPORT] preserved",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Twin run stores assumptions and gate plan",
+    "expected": "details contain assumptions, rain_source, open_at; alert deduplicated",
+    "actual": "2 runs stored, 1 flood alert (duplicate suppressed), reduction 28.4%",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "FakeDB + fake SWMM"
+  },
+  {
+    "test": "Every Python file compiles",
+    "expected": "no syntax errors",
+    "actual": "12 files OK",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  },
+  {
+    "test": "Migration 002 is additive only",
+    "expected": "no DROP TABLE / DROP COLUMN / TRUNCATE / DELETE FROM",
+    "actual": "only ADD/CREATE/ALTER ADD/UPDATE(flags)/policies",
+    "status": "PASS",
+    "executed": true,
+    "fakes": "none"
+  }
+]

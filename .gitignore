@@ -1,0 +1,15 @@
+.env
+__pycache__/
+*.pt
+scripts/logs/
+scripts/detections/
+scripts/models/eval/
+_run.*
+.venv/
+**/.venv/
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+.env.*
+!.env.example

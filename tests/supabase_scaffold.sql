@@ -1,0 +1,11 @@
+create role anon nologin; create role authenticated nologin; create role service_role nologin bypassrls;
+create schema auth;
+create or replace function auth.jwt() returns jsonb language sql stable as $$ select coalesce(nullif(current_setting('request.jwt.claims', true), '')::jsonb, '{}'::jsonb) $$;
+grant usage on schema auth to anon, authenticated;
+create schema storage;
+create table storage.buckets (id text primary key, name text, public boolean);
+create table storage.objects (id bigserial primary key, bucket_id text, name text);
+alter table storage.objects enable row level security;
+create publication supabase_realtime;
+grant usage on schema public to anon, authenticated;
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;

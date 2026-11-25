@@ -1,0 +1,13 @@
+[
+ {"test": "001 initial schema applies on PostgreSQL 16", "expected": "no errors", "actual": "applied", "status": "PASS", "executed": true, "fakes": "Supabase auth/storage/realtime scaffold (tests/supabase_scaffold.sql)"},
+ {"test": "002 upgrade applies over 001 with existing data", "expected": "no errors, no data lost", "actual": "applied; 1 old alert kept", "status": "PASS", "executed": true, "fakes": "same scaffold"},
+ {"test": "002 is idempotent (second run)", "expected": "no errors", "actual": "re-applied with 'already exists, skipping' notices only", "status": "PASS", "executed": true, "fakes": "same scaffold"},
+ {"test": "Old random pothole coordinates flagged", "expected": "location_source = legacy_random", "actual": "legacy_random", "status": "PASS", "executed": true, "fakes": "same scaffold"},
+ {"test": "Old virtual-node readings marked simulated", "expected": "SV-01 true, SS-01 false", "actual": "SS-01=false, SV-01=true", "status": "PASS", "executed": true, "fakes": "same scaffold"},
+ {"test": "Alert dedupe unique index", "expected": "second insert with same key rejected", "actual": "duplicate key value violates unique constraint alerts_dedupe_key", "status": "PASS", "executed": true, "fakes": "same scaffold"},
+ {"test": "Repair status change is logged with user email", "expected": "log row + updated_by + timestamp", "actual": "Reported -> Under Review by team@example.com (checked on site); timestamp set", "status": "PASS", "executed": true, "fakes": "JWT claims set manually"},
+ {"test": "Team role cannot change priority scores", "expected": "permission denied", "actual": "permission denied for table repair_tickets", "status": "PASS", "executed": true, "fakes": "authenticated role emulated"},
+ {"test": "Invalid repair status rejected", "expected": "check constraint violation", "actual": "violates check constraint repair_tickets_status_check", "status": "PASS", "executed": true, "fakes": "same scaffold"},
+ {"test": "Realtime publication covers dashboard tables", "expected": "10 tables", "actual": "alerts, commands, detection_jobs, potholes, readings, repair_tickets, road_risk, road_risk_history, runs, service_status", "status": "PASS", "executed": true, "fakes": "local publication (no Realtime server)"},
+ {"test": "Storage bucket 'detections' created", "expected": "public bucket", "actual": "detections public=true", "status": "PASS", "executed": true, "fakes": "storage schema emulated"}
+]

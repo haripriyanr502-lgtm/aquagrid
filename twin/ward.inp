@@ -1,0 +1,167 @@
+[TITLE]
+;;Project Title/Notes
+DrainX starter digital twin - one flood-prone road corridor
+J2 is the flood hotspot (matches the real hardware node SS-01)
+PIT1 and PIT2 are recharge pits fed through controllable gates OR1 and OR2
+
+[OPTIONS]
+;;Option             Value
+FLOW_UNITS           LPS
+INFILTRATION         HORTON
+FLOW_ROUTING         DYNWAVE
+LINK_OFFSETS         DEPTH
+MIN_SLOPE            0
+ALLOW_PONDING        YES
+SKIP_STEADY_STATE    NO
+START_DATE           01/01/2026
+START_TIME           00:00:00
+REPORT_START_DATE    01/01/2026
+REPORT_START_TIME    00:00:00
+END_DATE             01/01/2026
+END_TIME             06:00:00
+SWEEP_START          01/01
+SWEEP_END            12/31
+DRY_DAYS             3
+REPORT_STEP          00:05:00
+WET_STEP             00:01:00
+DRY_STEP             00:05:00
+ROUTING_STEP         0:00:05
+INERTIAL_DAMPING     PARTIAL
+NORMAL_FLOW_LIMITED  BOTH
+FORCE_MAIN_EQUATION  H-W
+VARIABLE_STEP        0.75
+LENGTHENING_STEP     0
+MIN_SURFAREA         1.167
+MAX_TRIALS           8
+HEAD_TOLERANCE       0.0015
+SYS_FLOW_TOL         5
+LAT_FLOW_TOL         5
+THREADS              1
+
+[EVAPORATION]
+;;Data Source    Parameters
+CONSTANT         0.0
+DRY_ONLY         NO
+
+[RAINGAGES]
+;;Name  Format     Interval  SCF  Source
+RG1     INTENSITY  0:15      1.0  TIMESERIES RAIN
+
+[SUBCATCHMENTS]
+;;Name  Rain Gage  Outlet  Area  %Imperv  Width  %Slope  CurbLen  SnowPack
+S1      RG1        J1      2     85       200    1.0     0
+S2      RG1        J2      2     85       200    1.0     0
+S3      RG1        J3      3     80       250    1.0     0
+S4      RG1        J4      2     75       200    1.0     0
+
+[SUBAREAS]
+;;Subcatchment  N-Imperv  N-Perv  S-Imperv  S-Perv  PctZero  RouteTo
+S1              0.013     0.15    1.5       5       25       OUTLET
+S2              0.013     0.15    1.5       5       25       OUTLET
+S3              0.013     0.15    1.5       5       25       OUTLET
+S4              0.013     0.15    1.5       5       25       OUTLET
+
+[INFILTRATION]
+;;Subcatchment  MaxRate  MinRate  Decay  DryTime  MaxInfil
+S1              75       6        4      7        0
+S2              75       6        4      7        0
+S3              75       6        4      7        0
+S4              75       6        4      7        0
+
+[JUNCTIONS]
+;;Name  Elevation  MaxDepth  InitDepth  SurDepth  Aponded
+J1      905        1.5       0          0         500
+J2      903        1.5       0          0         500
+J3      902        1.5       0          0         500
+J4      900        1.5       0          0         500
+
+[OUTFALLS]
+;;Name  Elevation  Type  Stage Data  Gated  Route To
+OUT1    898        FREE              NO
+
+[STORAGE]
+;;Name  Elev  MaxDepth  InitDepth  Shape       Curve/Params     SurDepth  Fevap  Psi  Ksat  IMD
+PIT1    899   3.0       0          FUNCTIONAL  0      0    60   0         0      49   120   0.4
+PIT2    898   3.5       0          FUNCTIONAL  0      0    60   0         0      49   120   0.4
+
+[CONDUITS]
+;;Name  From Node  To Node  Length  Roughness  InOffset  OutOffset  InitFlow  MaxFlow
+C1      J1         J2       300     0.015      0         0          0         0
+C2      J2         J3       150     0.015      0         0          0         0
+C3      J3         J4       300     0.015      0         0          0         0
+C4      J4         OUT1     300     0.015      0         0          0         0
+
+[ORIFICES]
+;;Name  From Node  To Node  Type  Offset  Qcoeff  Gated  CloseTime
+OR1     J2         PIT1     SIDE  0       0.65    YES    0
+OR2     J3         PIT2     SIDE  0       0.65    YES    0
+
+[XSECTIONS]
+;;Link  Shape     Geom1  Geom2  Geom3  Geom4  Barrels  Culvert
+C1      CIRCULAR  1.0    0      0      0      1
+C2      CIRCULAR  0.6    0      0      0      1
+C3      CIRCULAR  0.75   0      0      0      1
+C4      CIRCULAR  1.2    0      0      0      1
+OR1     CIRCULAR  0.3    0      0      0
+OR2     CIRCULAR  0.3    0      0      0
+
+[TIMESERIES]
+;;Name  Time  Value (mm/hr)  -- replaced automatically by brain.py
+RAIN    0:00  0
+RAIN    0:15  5
+RAIN    0:30  10
+RAIN    0:45  20
+RAIN    1:00  40
+RAIN    1:15  70
+RAIN    1:30  95
+RAIN    1:45  70
+RAIN    2:00  40
+RAIN    2:15  20
+RAIN    2:30  10
+RAIN    2:45  5
+RAIN    3:00  0
+
+[REPORT]
+;;Reporting Options
+INPUT      NO
+CONTROLS   NO
+SUBCATCHMENTS ALL
+NODES ALL
+LINKS ALL
+
+[MAP]
+DIMENSIONS 0.000 0.000 10000.000 10000.000
+Units      None
+
+[COORDINATES]
+;;Node  X-Coord  Y-Coord
+J1      1000     5000
+J2      3500     5000
+J3      5500     5000
+J4      7500     5000
+OUT1    9500     5000
+PIT1    3500     3000
+PIT2    5500     3000
+
+[Polygons]
+;;Subcatchment  X-Coord  Y-Coord
+S1  500   6000
+S1  1500  6000
+S1  1500  8000
+S1  500   8000
+S2  3000  6000
+S2  4000  6000
+S2  4000  8000
+S2  3000  8000
+S3  5000  6000
+S3  6000  6000
+S3  6000  8000
+S3  5000  8000
+S4  7000  6000
+S4  8000  6000
+S4  8000  8000
+S4  7000  8000
+
+[SYMBOLS]
+;;Gage  X-Coord  Y-Coord
+RG1     5000     9500
