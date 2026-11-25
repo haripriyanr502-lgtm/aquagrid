@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # AquaGrid — with DrainX road intelligence
 
 AquaGrid is a stormwater-management and road-monitoring platform for Bengaluru. It joins:
@@ -138,3 +139,6 @@ Upload `firmware/drainx_node/drainx_node.ino` to the Uno (Hardware Guide). Close
 
 ## Tests
 `python tests/run_tests.py` runs 22 offline tests (risk maths, GPS/EXIF parsing, detector helpers, dedupe, services against an in-memory database, the twin optimiser against a fake SWMM engine). Results are recorded in `tests/*.json` and in the development report, including what was **not** tested.
+=======
+# aquagrid
+>>>>>>> origin/main
